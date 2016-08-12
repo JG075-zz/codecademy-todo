@@ -5,7 +5,7 @@ module Menu
 		puts
 		puts "1) Add"
 		puts "2) Show"
-		puts "3) Write File"
+		puts "3) Write to File"
 		puts "4) Read from a File"
 		puts "Q) Quit"
 		puts
@@ -42,13 +42,20 @@ class List
 	def show
 		all_tasks
 	end
-
+ 
 	def write_to_file(filename)
 		my_file = File.new(filename, "w")
 			my_file.puts all_tasks
 		my_file.close
 	end
 
+	def read_from_file(filename)
+		my_file = File.new(filename, "r")
+			my_file.readlines.each { |item|
+				all_tasks << Task.new(item)
+			}
+		my_file.close
+	end
 end
 
 class Task
@@ -74,7 +81,6 @@ if __FILE__ == $PROGRAM_NAME
 
 	my_list = List.new
 
-
 	puts
 	puts "Welcome to the Todo app!"
 	puts
@@ -92,6 +98,10 @@ if __FILE__ == $PROGRAM_NAME
 			when "3"
 				my_list.write_to_file(prompt("Enter the name of the file") + ".txt")
 				puts "The file has been saved!"
+				puts
+			when "4"
+				my_list.read_from_file(prompt("Enter the name of the file") + ".txt")
+				puts "The file has been opened!"
 				puts
 			else
 				puts "Sorry, I did not understand"
