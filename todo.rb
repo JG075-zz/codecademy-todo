@@ -5,8 +5,9 @@ module Menu
 		puts
 		puts "1) Add"
 		puts "2) Show"
-		puts "3) Write to File"
-		puts "4) Read from a File"
+		puts "3) Delete"
+		puts "4) Write to File"
+		puts "5) Read from a Fileee"
 		puts "Q) Quit"
 		puts
 	end
@@ -40,7 +41,11 @@ class List
 	end
 
 	def show
-		all_tasks
+		count = 0
+		all_tasks.collect { |item|
+			count += 1
+			item = "#{count}) #{item}"
+		}
 	end
  
 	def write_to_file(filename)
@@ -95,11 +100,11 @@ if __FILE__ == $PROGRAM_NAME
 				puts
 				puts my_list.show
 				puts
-			when "3"
+			when "4"
 				my_list.write_to_file(prompt("Enter the name of the file") + ".txt")
 				puts "The file has been saved!"
 				puts
-			when "4"
+			when "5"
 				begin
 					my_list.read_from_file(prompt("Enter the name of the file") + ".txt")
 					puts
