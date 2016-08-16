@@ -100,9 +100,16 @@ if __FILE__ == $PROGRAM_NAME
 				puts "The file has been saved!"
 				puts
 			when "4"
-				my_list.read_from_file(prompt("Enter the name of the file") + ".txt")
-				puts "The file has been opened!"
-				puts
+				begin
+					my_list.read_from_file(prompt("Enter the name of the file") + ".txt")
+					puts
+					puts "The file has been opened!"
+					puts
+				rescue Errno::ENOENT
+					puts
+					puts "File name not found, please verify your file and path."
+					puts
+				end
 			else
 				puts "Sorry, I did not understand"
 			end
