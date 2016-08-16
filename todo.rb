@@ -7,7 +7,7 @@ module Menu
 		puts "2) Show"
 		puts "3) Delete"
 		puts "4) Write to File"
-		puts "5) Read from a Fileee"
+		puts "5) Read from a File"
 		puts "Q) Quit"
 		puts
 	end
@@ -47,6 +47,10 @@ class List
 			item = "#{count}) #{item}"
 		}
 	end
+
+	def delete(taskno)
+		all_tasks.delete_at(taskno.to_i - 1)
+	end
  
 	def write_to_file(filename)
 		my_file = File.new(filename, "w")
@@ -55,6 +59,7 @@ class List
 	end
 
 	def read_from_file(filename)
+		all_tasks.clear
 		my_file = File.new(filename, "r")
 			my_file.readlines.each { |item|
 				all_tasks << Task.new(item)
@@ -92,20 +97,33 @@ if __FILE__ == $PROGRAM_NAME
 		until ["q"].include?(user_input = prompt(show).downcase)
 			case user_input
 			when "1"
+				puts
 				my_list.add(Task.new(prompt("Add a name for the new task")))
-				prompt("The task has been successfully added!", "")
+				puts
+				prompt("The task has been added!", "")
 				puts
 			when "2"
+				puts
 				puts "Your list of tasks:"
 				puts
 				puts my_list.show
 				puts
+			when "3"
+				puts
+				puts my_list.show
+				puts
+				my_list.delete(prompt("Enter the number of the task to delete"))
+				puts
+				prompt("The task has been deleted!", "")
+				puts
 			when "4"
+				puts
 				my_list.write_to_file(prompt("Enter the name of the file") + ".txt")
 				puts "The file has been saved!"
 				puts
 			when "5"
 				begin
+					puts
 					my_list.read_from_file(prompt("Enter the name of the file") + ".txt")
 					puts
 					puts "The file has been opened!"
@@ -121,5 +139,6 @@ if __FILE__ == $PROGRAM_NAME
 		end
 	puts
 	puts "Outro - Thanks for using the menu system!"
+	puts
   
 end
