@@ -5,9 +5,10 @@ module Menu
 		puts
 		puts "1) Add"
 		puts "2) Show"
-		puts "3) Delete"
-		puts "4) Write to File"
-		puts "5) Read from a File"
+		puts "3) Update"
+		puts "4) Delete"
+		puts "5) Write to File"
+		puts "6) Read from a File"
 		puts "Q) Quit"
 		puts
 	end
@@ -48,8 +49,12 @@ class List
 		}
 	end
 
-	def delete(taskno)
-		all_tasks.delete_at(taskno.to_i - 1)
+	def update(task_number, task)
+		all_tasks[task_number.to_i - 1] = task
+	end
+
+	def delete(task_number)
+		all_tasks.delete_at(task_number.to_i - 1)
 	end
  
 	def write_to_file(filename)
@@ -112,16 +117,24 @@ if __FILE__ == $PROGRAM_NAME
 				puts
 				puts my_list.show
 				puts
+				my_list.update(prompt("Please enter task number to update"),Task.new(prompt("Please enter a new description")))
+				puts
+				prompt("The task has been updated!", "")
+				puts
+			when "4"
+				puts
+				puts my_list.show
+				puts
 				my_list.delete(prompt("Enter the number of the task to delete"))
 				puts
 				prompt("The task has been deleted!", "")
 				puts
-			when "4"
+			when "5"
 				puts
 				my_list.write_to_file(prompt("Enter the name of the file") + ".txt")
 				puts "The file has been saved!"
 				puts
-			when "5"
+			when "6"
 				begin
 					puts
 					my_list.read_from_file(prompt("Enter the name of the file") + ".txt")
