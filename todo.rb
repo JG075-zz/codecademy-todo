@@ -59,26 +59,34 @@ class List
  
 	def write_to_file(filename)
 		my_file = File.new(filename, "w")
-			my_file.puts all_tasks
+			my_file.puts all_tasks.collect { |task| 
+				task.to_machine
+			}
 		my_file.close
 	end
 
 	def read_from_file(filename)
 		all_tasks.clear
-		my_file = File.new(filename, "r")
-			my_file.readlines.each { |item|
-				all_tasks << Task.new(item)
-			}
-		my_file.close
+		IO.readlines(filename).each do |line| # [X] : my task, is great
+            status, *description = line.split(':') # ["[X]", "My task, is great"]
+            status = status.include?('X') # [X] = true
+            add(Task.new(description.join(':').strip, status)) # decription ["My task, is great"] = My task, is great :, true
+        end
 	end
 end
 
 class Task
 
 	attr_reader :description
+	attr_reader :status
 
-	def initialize(desc)
+	def initialize(desc, status = false)
 		@description = desc
+		@status = status
+	end
+
+	def completed?
+		status
 	end
 
 	# The default to_s method is called with every puts XYS. However the default to_s method prints the object's class and encoding of the object id
@@ -87,6 +95,15 @@ class Task
 		@description
 	end
 
+	def to_machine
+		represent_status + " : " + description
+	end
+
+	private
+
+	def represent_status
+		completed? ? "[X]" : "[ ]"
+	end
 end
 
 if __FILE__ == $PROGRAM_NAME
@@ -122,7 +139,7 @@ if __FILE__ == $PROGRAM_NAME
 				prompt("The task has been updated!", "")
 				puts
 			when "4"
-				puts
+				puts	
 				puts my_list.show
 				puts
 				my_list.delete(prompt("Enter the number of the task to delete"))
