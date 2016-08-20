@@ -9,6 +9,7 @@ module Menu
 		puts "4) Delete"
 		puts "5) Write to File"
 		puts "6) Read from a File"
+		puts "7) Toggle Task Status"
 		puts "Q) Quit"
 		puts
 	end
@@ -45,12 +46,12 @@ class List
 		count = 0
 		all_tasks.collect { |item|
 			count += 1
-			item = "#{count}) #{item}"
+			item = "#{count}) #{item.to_machine}"
 		}
 	end
 
 	def update(task_number, task)
-		all_tasks[task_number.to_i - 1] = task
+		all_tasks[task_number - 1] = task
 	end
 
 	def delete(task_number)
@@ -70,8 +71,12 @@ class List
 		IO.readlines(filename).each do |line| # [X] : my task, is great
             status, *description = line.split(':') # ["[X]", "My task, is great"]
             status = status.include?('X') # [X] = true
-            add(Task.new(description.join(':').strip, status)) # decription ["My task, is great"] = My task, is great :, true
+            add(Task.new(description.join(':').strip, status)) # description ["My task, is great"] = My task, is great, true
         end
+	end
+
+	def toggle(task_number)
+		all_tasks[task_number - 1].toggle_status
 	end
 end
 
@@ -97,6 +102,10 @@ class Task
 
 	def to_machine
 		represent_status + " : " + description
+	end
+
+	def toggle_status
+		@status = !completed?
 	end
 
 	private
@@ -134,7 +143,7 @@ if __FILE__ == $PROGRAM_NAME
 				puts
 				puts my_list.show
 				puts
-				my_list.update(prompt("Please enter task number to update"),Task.new(prompt("Please enter a new description")))
+				my_list.update(prompt("Please enter task number to update").to_i,Task.new(prompt("Please enter a new description")))
 				puts
 				prompt("The task has been updated!", "")
 				puts
@@ -163,12 +172,17 @@ if __FILE__ == $PROGRAM_NAME
 					puts "File name not found, please verify your file and path."
 					puts
 				end
+			when "7"
+				puts
+				puts my_list.show
+				puts
+				my_list.toggle(prompt("Enter the task number to toggle status").to_i)
+				puts
 			else
 				puts "Sorry, I did not understand"
 			end
 		end
 	puts
 	puts "Outro - Thanks for using the menu system!"
-	puts
-  
+	puts 
 end
